@@ -1,0 +1,43 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "type": "cppbuild",
+      "command": "\\vscode\\mingw\\bin\\g++.exe",
+      "args": [
+        "-fdiagnostics-color=always",
+        "-g",
+        "${file}",
+        "-o",
+        "${fileDirname}\\${fileBasenameNoExtension}.exe"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}\\..\\..\\mingw\\bin"
+      },
+      "problemMatcher": ["$gcc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "detail": "Compilación portable con MinGW"
+    },
+    {
+      "label": "build-and-run",
+      "type": "shell",
+      "command": "${workspaceFolder}\\..\\..\\mingw\\bin\\g++.exe \"${file}\" -o \"${fileDirname}\\${fileBasenameNoExtension}.exe\"; if ($LASTEXITCODE -eq 0) { \"${fileDirname}\\${fileBasenameNoExtension}.exe\" }",
+      "options": {
+        "shell": {
+          "executable": "powershell.exe"
+        },
+        "cwd": "${workspaceFolder}\\..\\..\\mingw\\bin"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "problemMatcher": [],
+      "detail": "Compila y ejecuta con MinGW portable"
+    }
+  ]
+}
