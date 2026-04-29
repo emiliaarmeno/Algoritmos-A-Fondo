@@ -81,4 +81,20 @@ void fraccionSetDenominador(Fraccion& f,int d)
     f.denominador = d;
 }
 
+Fraccion fraccionMultiplicar(Fraccion f,int escalar)
+{
+    Fraccion mult;
+    mult.numerador = fraccionGetNumerador(f)*escalar;
+    mult.denominador = fraccionGetDenominador(f)*escalar;
+    return mult;
+}
+
+Fraccion fraccionMultiplicar(Fraccion f,Fraccion g)
+{
+    Fraccion mult;
+    mult.numerador = fraccionGetNumerador(f)*fraccionGetNumerador(g);
+    mult.denominador = fraccionGetDenominador(f)*fraccionGetDenominador(g);
+    return mult;
+}
+
 #endif
