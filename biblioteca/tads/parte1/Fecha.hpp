@@ -65,7 +65,6 @@ Fecha fechaAddSegundos(Fecha ff, int n)
 {
     long long milisegundosPorSegundo = 1000;  // 1 segundo = 1 seg × 1000 ms = 1000 ms
     long long msf = attributesToMillis(ff.anio, ff.mes, ff.dia, ff.hora, ff.minuto, ff.segundo, 0);
-    _setSecond(msf, ff.segundo);
     // paso la cantidad de horas n a milisegundos
     long long msfSumado = msf + (n * milisegundosPorSegundo);  // sumo todo en milisegundos
     Fecha ret = fecha(msfSumado);
@@ -76,7 +75,6 @@ Fecha fechaAddMinutos(Fecha ff, int n)
 {
     long long milisegundosPorMinuto = 60000;  // 1 minuto = 60 seg × 1000 ms = 60.000 ms
     long long msf = attributesToMillis(ff.anio, ff.mes, ff.dia, ff.hora, ff.minuto, ff.segundo, 0);
-    _setSecond(msf, ff.segundo);
     // paso la cantidad de horas n a milisegundos
     long long msfSumado = msf + (n * milisegundosPorMinuto);  // sumo todo en milisegundos
     Fecha ret = fecha(msfSumado);
@@ -87,7 +85,6 @@ Fecha fechaAddHoras(Fecha ff, int n)
 {
     long long milisegundosPorHora = 3600000;  // 1 hora = 60 min × 60 seg × 1000 ms = 3.600.000 ms
     long long msf = attributesToMillis(ff.anio, ff.mes, ff.dia, ff.hora, ff.minuto, ff.segundo, 0);
-    _setSecond(msf, ff.segundo);
     // paso la cantidad de horas n a milisegundos
     long long msfSumado = msf + (n * milisegundosPorHora);  // sumo todo en milisegundos
     Fecha ret = fecha(msfSumado);
@@ -98,7 +95,6 @@ Fecha fechaAddDias(Fecha ff, int n)
 {
     long long milisegundosPorDia = 86400000;  // 1 día = 24 hs × 60 min × 60 seg × 1000 ms = 86.400.000 ms
     long long msf = attributesToMillis(ff.anio, ff.mes, ff.dia, ff.hora, ff.minuto, ff.segundo, 0);
-    _setSecond(msf, ff.segundo);
     // paso la cantidad de dias n a milisegundos
     long long msfSumado = msf + (n * milisegundosPorDia);  // sumo todo en milisegundos
     Fecha ret = fecha(msfSumado);
