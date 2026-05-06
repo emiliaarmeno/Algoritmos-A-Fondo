@@ -10,37 +10,124 @@ using std::string;
 
 int length(string s)
 {
-    return 0;
+    int i = 0;
+    while(s[i] != '\0')
+    {
+        i++;
+    }
+    return i;
 }
 
 int charCount(string s, char c)
 {
-    return 0;
+    int cant = 0, i = 0;
+    while(s[i] != '\0')
+    {
+        if(s[i] == c)
+        {
+            cant++;
+            i++;
+        }
+        else
+        {
+            i++;
+        }
+    }
+    return cant;
 }
 
+// devuelve subcadena entre caracter d inclusive y h no inclusive
 string substring(string s, int d, int h)
 {
-    return "";
+    string ret = "";
+    int i = d;
+    while(i < h)
+    {
+        ret = ret + s[i];
+        i++;
+    }
+    return ret;
 }
 
-string substring(string s, int d)  // ok
+string substring(string s, int d)  // devuelve substring desde el caracter d
+                                   // hasta el final de la cadena
 {
-    return "";
+    string ret = "";
+    int i = d;
+    while(i < length(s))
+    {
+        ret = ret + s[i];
+        i++;
+    }
+    return ret;
 }
 
-int indexOf(string s, char c)  // ok
+int indexOf(string s,
+            char c)  // posicion de la primera vez que aparece c en una cadena
 {
-    return 0;
+    int pos = 0;
+    while(s[pos] != c && pos < length(s))
+    {
+        pos++;
+    }
+    if(pos >= length(s))
+    {
+        pos = -1;
+    }
+    return pos;
 }
 
-int indexOf(string s, char c, int offSet)  // ok
+int indexOf(string s, char c,
+            int offSet)  // retorna la primera posicion de c en s descartando
+                         // los primeros offSet carateres
 {
-    return 0;
+    string x = substring(s, offSet);
+    int ret = indexOf(x, c);
+    if(ret < 0)
+    {
+        ret = -1;
+    }
+    else
+    {
+        ret = ret + offSet;
+    }
+    return ret;
 }
 
-int indexOf(string s, string toSearch)  // ok
+
+int indexOf(string s, string toSearch)  // busca la posicion de la primera vez que aparece
+                                        // una cadena adentro de otra
 {
-    return 0;
+    int i = 0, primPos = 0, offSet = 0;
+    bool encontrado = false, primeraVuelta = true;
+    while(s[i] != '\0' && encontrado == false)
+    {
+        if(primeraVuelta)
+        {
+            primPos = indexOf(s, toSearch[0]);  // busco la primera vez que
+                                                // aparece la letra de toSearch
+            primeraVuelta = false;
+        }
+        else
+        {
+            primPos = indexOf(s, toSearch[0], offSet); //si es la segunda vez que busca arranco desde donde deje
+        }
+
+        if(primPos >= 0) //si pudo encontrar el index 
+        {
+            if(substring(s, primPos, primPos + length(toSearch)) == toSearch)
+            {
+                encontrado = true;
+            }else{
+                offSet = primPos + 1;
+            }
+        }else{
+            i = length(s); //no encontro el indice --> no esta la palabra en la cadena 
+                           //fuerzo la salida del while
+        }
+    }
+    // salio porque se termino la cadena o porque encontro la posicion de toSearch
+    return primPos;
 }
 
 int indexOf(string s, string toSearch, int offset)
