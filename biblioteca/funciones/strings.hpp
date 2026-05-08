@@ -72,7 +72,7 @@ int indexOf(string s,
     }
     if(pos >= length(s))
     {
-        pos = -1;
+        pos = -1;  // devuelve -1 si no esta en la cadena
     }
     return pos;
 }
@@ -94,9 +94,9 @@ int indexOf(string s, char c,
     return ret;
 }
 
-
-int indexOf(string s, string toSearch)  // busca la posicion de la primera vez que aparece
-                                        // una cadena adentro de otra
+int indexOf(string s,
+            string toSearch)  // busca la posicion de la primera vez que aparece
+                              // una cadena adentro de otra
 {
     int i = 0, primPos = 0, offSet = 0;
     bool encontrado = false, primeraVuelta = true;
@@ -110,89 +110,236 @@ int indexOf(string s, string toSearch)  // busca la posicion de la primera vez q
         }
         else
         {
-            primPos = indexOf(s, toSearch[0], offSet); //si es la segunda vez que busca arranco desde donde deje
+            primPos = indexOf(s, toSearch[0],
+                              offSet);  // si es la segunda vez que busca
+                                        // arranco desde donde deje
         }
 
-        if(primPos >= 0) //si pudo encontrar el index 
+        if(primPos >= 0)  // si pudo encontrar el index
         {
             if(substring(s, primPos, primPos + length(toSearch)) == toSearch)
             {
                 encontrado = true;
-            }else{
+            }
+            else
+            {
                 offSet = primPos + 1;
             }
-        }else{
-            i = length(s); //no encontro el indice --> no esta la palabra en la cadena 
-                           //fuerzo la salida del while
+        }
+        else
+        {
+            i = length(s);  // no encontro el indice --> no esta la palabra en
+                            // la cadena fuerzo la salida del while
         }
     }
-    // salio porque se termino la cadena o porque encontro la posicion de toSearch
+    // salio porque se termino la cadena o porque encontro la posicion de
+    // toSearch
     return primPos;
 }
 
 int indexOf(string s, string toSearch, int offset)
 {
-    return 0;
+    int i = 0, primPos = 0;
+    bool encontrado = false;
+    while(s[i] != '\0' && encontrado == false)
+    {
+        primPos = indexOf(s, toSearch[0], offset);
+
+        if(primPos >= 0)  // si pudo encontrar el index
+        {
+            if(substring(s, primPos, primPos + length(toSearch)) == toSearch)
+            {
+                encontrado = true;
+            }
+            else
+            {
+                offset = primPos + 1;
+            }
+        }
+        else
+        {
+            i = length(s);  // no encontro el indice --> no esta la palabra en
+                            // la cadena fuerzo la salida del while
+        }
+    }
+    // salio porque se termino la cadena o porque encontro la posicion de
+    // toSearch
+    return primPos;
 }
 
 int lastIndexOf(string s, char c)
 {
-    return 0;
+    int i = length(s), pos = 0;
+    bool encontrado = false;
+    while(i >= 0 && !encontrado)
+    {
+        if(s[i] == c)
+        {
+            pos = i;
+            encontrado = true;
+        }
+        else
+        {
+            pos = -1;
+        }
+        i--;
+    }
+    return pos;
 }
 
 int indexOfN(string s, char c, int n)
 {
-    return 0;
+    int ret = 0, offSet = 0, cont = 0;
+    if(n == 0)
+    {  // devuelvo negativo si me pide cero cantidad de veces
+        ret = -1;
+    }
+
+    while(cont < n)
+    {                                 // mientras que no la encuentre n veces
+        ret = indexOf(s, c, offSet);  // posicion del caracter
+        offSet = indexOf(s, c, offSet) +
+                 1;  // por si no era el final que arranque a buscar el
+                     // siguiente desde un lugar desp del que esta
+
+        if(ret < 0)
+        {                     // no esta tantas veces el caracter en la cadena
+            ret = length(s);  // la consigna dice que haga esto
+        }
+        cont++;
+    }
+    return ret;
 }
 
 int charToInt(char c)
 {
-    return 0;
+    if(c >= '0' && c <= '9')
+    {
+        return c - '0';
+    }
+
+    if(c >= 'A' && c <= 'Z')
+    {
+        return c - 'A' + 10;
+    }
+
+    if(c >= 'a' && c <= 'z')
+    {
+        return c - 'a' + 10;
+    }
+
+    return -1;  // si no es un caracter valido para convertir
 }
 
 char intToChar(int i)
 {
-    return '0';
+    char ret;
+    if(i >= 0 && i <= 9)
+    {
+        ret = '0' + i;  // i = 3 → '0' + 3 = '3'
+    }
+    else if(i >= 10 && i <= 35)
+    {
+        ret = 'A' + (i - 10);  // i = 13 → 'A' + (13 - 10) = 'A' + 3 = 'D'
+    }
+    return ret;
 }
 
 int getDigit(int n, int i)
 {
-    return 0;
+    int digito;
+    int aux = 1;
+    for(int j = 0; j < i; j++)
+    {
+        aux *= 10;  // multiplico el 10 i veces
+    }
+    aux = n / aux;      // asi se mueve el digito que quiero a la derecha
+    digito = aux % 10;  // lo extraigo haciendo el resto
+    return digito;
 }
 
 int digitCount(int n)
 {
-    return 0;
+    int cont = 0;
+    while(n != 0)
+    {  // mientras que n no es cero sigo dividiendo por 10 y contando cuantas
+       // veces
+        cont++;
+        n /= 10;
+    }
+    return cont;
 }
 
 string intToString(int i)
 {
-    return "";
+    if(i == 0)
+        return "0";  // por las dudas para que no explote si el valor es cero
+    string cadena = "";
+    int totalDigitos = digitCount(i);
+    for(int j = totalDigitos - 1; j >= 0; j--)
+    {  // la condicion queda rara porque sino me pasaba el entero a cadena con
+       // el orden inverso (porque arrancaba desde el principio)
+        int digito = getDigit(i, j);
+        cadena += intToChar(digito);
+    }
+    return cadena;
 }
 
-int stringToInt(string s, int b)  // ok
+int stringToInt(string s, int b)  // no se si funciona
 {
-    return 0;
+    if(s == "") return 0;
+    int numero = 0;
+    int multiplicador = 1;
+    int totalCaracteres = length(s);
+
+    for(int j = totalCaracteres - 1; j >= 0; j--)
+    {
+        char caracter = substring(s, j, j + 1)[0];
+        int valor = charToInt(caracter);
+        if(valor == -1) continue;
+        numero += valor * multiplicador;
+        multiplicador *= b;
+    }
+
+    return numero;
 }
 
-int stringToInt(string s)  // ok
+int stringToInt(string s)  // tampoco se si funciona
 {
-    return 0;
+    if(s == "") return 0;
+    int numero = 0;
+    int multiplicador = 1;
+    int totalCaracteres = length(s);
+
+    for(int j = totalCaracteres - 1; j >= 0; j--)
+    {
+        char caracter = substring(s, j, j + 1)[0];
+        int valor = charToInt(caracter);
+        if(valor == -1) continue;
+        numero += valor * multiplicador;
+        multiplicador *= 10;
+    }
+
+    return numero;
 }
 
 string charToString(char c)
 {
-    return "";
+    string s = "";
+    s += c;
+    return s;
 }
 
 char stringToChar(string s)
 {
-    return '0';
+    // no se si funciona no lo puedo probar
+    // capaz tengo que verificar que me llegue una cadena de una sola posicion
+    return s[0];
 }
 
 string stringToString(string s)
 {
-    return "";
+    return s;
 }
 
 string doubleToString(double d)
@@ -202,132 +349,355 @@ string doubleToString(double d)
 
 double stringToDouble(string s)
 {
-    return 1.0;
+    int i = 0;
+    int n = s.size();
+
+    // Manejar signo
+    bool negativo = false;
+    if(i < n && s[i] == '-')
+    {
+        negativo = true;
+        i++;
+    }
+
+    // Leer parte entera
+    double parteEntera = 0;
+    while(i < n && s[i] >= '0' && s[i] <= '9')
+    {
+        parteEntera = parteEntera * 10 + (s[i] - '0');
+        i++;
+    }
+
+    // Si hay parte decimal
+    double parteDecimal = 0;
+    double divisor = 1;
+    if(i < n && s[i] == '.')
+    {
+        i++;
+        while(i < n && s[i] >= '0' && s[i] <= '9')
+        {
+            parteDecimal = parteDecimal * 10 + (s[i] - '0');
+            divisor *= 10;
+            i++;
+        }
+    }
+
+    double resultado = parteEntera + parteDecimal / divisor;
+    if(negativo) resultado = -resultado;
+    return resultado;
 }
 
 bool isEmpty(string s)
 {
-    return true;
+    return length(s) == 0;
 }
 
 bool startsWith(string s, string x)
 {
-    return true;
+    string parteAdelante = substring(s, 0, length(x));
+
+    if(parteAdelante == x)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool endsWith(string s, string x)
 {
-    return true;
+    int desde = length(s) - length(x) -
+                1;  // menos uno porque las cadenas empiezan en cero
+    string parteAtras = substring(s, desde);
+
+    if(parteAtras == x)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool contains(string s, char c)
 {
-    return true;
+    int posicion = indexOf(s, c);
+    bool ret = false;
+    if(posicion > 0)
+    {
+        ret = true;
+    }
+    return ret;
 }
 
 string replace(string s, char oldChar, char newChar)
 {
-    return "";
+    for(int i = 0; s[i] != '\0'; i++)
+    {
+        if(s[i] == oldChar)
+        {
+            s[i] = newChar;
+        }
+    }
+
+    return s;
 }
 
 string insertAt(string s, int pos, char c)
 {
-    return "";
+    string antes = substring(s, 0, pos);
+    string despues = substring(s, pos, length(s));
+    return antes + c + despues;
 }
 
 string removeAt(string s, int pos)
 {
-    return "";
+    string antes = substring(s, 0, pos);
+    string despues = substring(s, pos + 1, length(s));
+    return antes + despues;
 }
 
-string ltrim(string s)
+string ltrim(string s) //le saca espacios de mas por izquierda 
 {
-    return "";
+    if(s[0] == ' ')
+    {
+        int i = 0;
+        while(i < length(s) && s[i] == ' ')
+        {
+            i++;
+        }
+        string removed = substring(s, i, length(s));
+        return removed;
+    }
+    else
+    {
+        return s;
+    }
 }
 
-string rtrim(string s)
+string rtrim(string s) //por derecha 
 {
-    return "";
+    int i = length(s) - 1;
+    while(i >= 0 && s[i] == ' ')
+    {  // aca verifico que i sea un indice valido
+        i--;
+    }
+    string removed =
+        substring(s, 0, i + 1);  // recorto a s desde que empieza hasta el
+                                 // ultimo caracter que no es espacio
+    return removed;
 }
 
-string trim(string s)
+string trim(string s) //de ambos lados 
 {
-    return "";
+    int inicio = 0;
+    int final = length(s) - 1;
+
+    if(s[inicio] == ' ' || s[final] == ' ')
+    {
+        while(inicio < length(s) && s[inicio] == ' ')
+        {
+            inicio++;
+        }
+        while(final >= 0 && s[final] == ' ')
+        {
+            final--;
+        }
+        return substring(s, inicio, final + 1);
+    }
+    else
+    {
+        return s;
+    }
 }
 
-string replicate(char c, int n)
+string replicate(char c, int n) //hace una cadena del mismo caracter n veces 
 {
-    return "";
+    string s;
+    for(int i = 0; i < n; i++)
+    {
+        s += c;
+    }
+    return s;
 }
 
-string spaces(int n)
+string spaces(int n) //lo mismo pero con espacios osea vacia 
 {
-    return "";
+    string s;
+    for(int i = 0; i < n; i++)
+    {
+        s += " ";
+    }
+    return s;
 }
 
-string lpad(string s, int n, char c)
+string lpad(string s, int n, char c) //le suma espacios a una cadena para llegar al largo n 
 {
-    return "";
+    int largoDeS = length(s);
+    if(largoDeS >= n)
+    {
+        return s;
+    }
+    string relleno;
+    for(int i = 0; i < n - largoDeS; i++)
+    {
+        relleno += c;
+    }
+    return relleno + s;
 }
 
-string rpad(string s, int n, char c)
+string rpad(string s, int n, char c) //por derecha 
 {
-    return "";
+    int largoDeS = length(s);
+    if(largoDeS >= n)
+    {
+        return s;
+    }
+
+    for(int i = 0; i < n - largoDeS; i++)
+    {
+        s += c;  // sumo los caracteres y se ponen a la derecha
+    }
+
+    return s;
 }
 
-string cpad(string s, int n, char c)
+string cpad(string s, int n, char c) //distribuye los espacios por ambos lados
 {
-    return "";
+    int largo = length(s);
+    if(largo >= n)
+    {
+        return s;
+    }
+
+    int faltan = n - largo;
+    int izquierda = faltan / 2;  // la mitad de los que faltan
+    int derecha =
+        faltan -
+        izquierda;  // otra manera de asignarle la mitad de los que faltan
+
+    string izquierdaRelleno, derechaRelleno;
+    for(int i = 0; i < izquierda; i++)
+    {
+        izquierdaRelleno += c;
+    }
+    for(int i = 0; i < derecha; i++)
+    {
+        derechaRelleno += c;
+    }
+
+    return izquierdaRelleno + s + derechaRelleno;
 }
 
 bool isDigit(char c)
 {
-    return true;
+    return c >= '0' && c <= '9';  // esto funciona porque compara los digitos en
+                                  // ascii entre 48 y 57
 }
 
 bool isLetter(char c)
 {
-    return true;
+    if((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
+    {  // creo que esto funciona porque compara las posiciones en ascii del 65
+       // al 90 y del 97 al 122
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool isUpperCase(char c)
 {
-    return true;
+    return c >= 'A' && c <= 'Z';
 }
 
 bool isLowerCase(char c)
 {
-    return true;
+    return c >= 'a' && c <= 'z';
 }
 
-char toUpperCase(char c)
+char toUpperCase(char c)  // me fije en la tabla ascii la conexion entre las
+                          // mayusculas y minusculas
+//'A'=65 y 'a'=97 --> 97-65=32 todos tienen 32 de diferencia
 {
-    return '0';
+    if(c >= 'a' && c <= 'z')
+    {
+        c = c - 32;
+    }
+    return c;
 }
 
 char toLowerCase(char c)
 {
-    return '0';
+    if(c >= 'A' && c <= 'Z')
+    {
+        c = c + 32;
+    }
+    return c;
 }
 
 string toUpperCase(string s)
 {
-    return "";
+    for(int i = 0; s[i] != '\0'; i++)
+    {
+        if(s[i] >= 'a' && s[i] <= 'z')
+        {
+            s[i] = s[i] - 32;
+        }
+    }
+    return s;
 }
 
 string toLowerCase(string s)
 {
-    return "";
+    for(int i = 0; s[i] != '\0'; i++)
+    {
+        if(s[i] >= 'A' && s[i] <= 'Z')
+        {
+            s[i] = s[i] + 32;
+        }
+    }
+    return s;
 }
 
-int cmpString(string a, string b)
+int cmpString(string a, string b)  // devuelve negativo si a precede a b, alfabeticamente
 {
-    return 0;
+    if(a == b)
+    {
+        return 0;
+    }
+    else if(a < b)
+    {
+        return -1;
+    }
+    else
+    {
+        return 1;
+    }
 }
 
+//negativo si a<b
+//positivo si a>b
+//cero si a=b
 int cmpDouble(double a, double b)
 {
-    return 0;
+    if(a == b)
+    {
+        return 0;
+    }
+    else if(a < b)
+    {
+        return -1;
+    }
+    else
+    {
+        return 1;
+    }
 }
 
 char* stringToCString(string s)
