@@ -169,7 +169,7 @@ int indexOf(string s, string toSearch, int offset)
 
 int lastIndexOf(string s, char c)
 {
-    int i = length(s), pos = 0;
+    int i = length(s)-1, pos = 0; //arranca en length-1 porque sino es una posicion invalida
     bool encontrado = false;
     while(i >= 0 && !encontrado)
     {
@@ -294,9 +294,8 @@ int stringToInt(string s, int b)  // no se si funciona
 
     for(int j = totalCaracteres - 1; j >= 0; j--)
     {
-        char caracter = substring(s, j, j + 1)[0];
+        char caracter = s[j];
         int valor = charToInt(caracter);
-        if(valor == -1) continue;
         numero += valor * multiplicador;
         multiplicador *= b;
     }
@@ -304,23 +303,9 @@ int stringToInt(string s, int b)  // no se si funciona
     return numero;
 }
 
-int stringToInt(string s)  // tampoco se si funciona
+int stringToInt(string s)  //uso la otra pero fijo la base numerica decimal
 {
-    if(s == "") return 0;
-    int numero = 0;
-    int multiplicador = 1;
-    int totalCaracteres = length(s);
-
-    for(int j = totalCaracteres - 1; j >= 0; j--)
-    {
-        char caracter = substring(s, j, j + 1)[0];
-        int valor = charToInt(caracter);
-        if(valor == -1) continue;
-        numero += valor * multiplicador;
-        multiplicador *= 10;
-    }
-
-    return numero;
+    return stringToInt(s,10);
 }
 
 string charToString(char c)
@@ -344,7 +329,21 @@ string stringToString(string s)
 
 string doubleToString(double d)
 {
-    return "";
+    int parteEntera = int(d);
+    double parteDecimal = d-parteEntera;
+    string ptEntStr = intToString(parteEntera);
+    int unDecimal = 0;
+    string ptDecStr = "";
+    int cantDecimales = 0; //para redondear
+    while(parteDecimal!=0 && cantDecimales < 6){
+        parteDecimal = parteDecimal * 10; //muevo pasando la coma un digito decimal 
+        unDecimal = (int)parteDecimal;        // saco el dígito
+        parteDecimal = parteDecimal - unDecimal;  // me quedo con los decimales restantes
+        ptDecStr = ptDecStr+intToString(unDecimal); //lo agrego al string
+        cantDecimales++;
+    }
+    string ret = ptEntStr + "." + ptDecStr;
+    return ret;
 }
 
 double stringToDouble(string s)
@@ -408,8 +407,7 @@ bool startsWith(string s, string x)
 
 bool endsWith(string s, string x)
 {
-    int desde = length(s) - length(x) -
-                1;  // menos uno porque las cadenas empiezan en cero
+    int desde = length(s) - length(x);  
     string parteAtras = substring(s, desde);
 
     if(parteAtras == x)
@@ -426,7 +424,7 @@ bool contains(string s, char c)
 {
     int posicion = indexOf(s, c);
     bool ret = false;
-    if(posicion > 0)
+    if(posicion >= 0)
     {
         ret = true;
     }
