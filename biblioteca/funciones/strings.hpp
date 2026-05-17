@@ -679,6 +679,13 @@ int cmpString(string a, string b)  // devuelve negativo si a precede a b, alfabe
     }
 }
 
+//compara cadenas segun su longitud
+//la cadena más corta precede a la cadena más larga.
+int cmpString2(string a,string b) 
+{
+    return length(a)-length(b);
+}
+
 //negativo si a<b
 //positivo si a>b
 //cero si a=b
