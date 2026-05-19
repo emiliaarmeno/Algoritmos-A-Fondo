@@ -22,9 +22,5 @@ using std::to_string;
 
 int main()
 {
-
-    double d = 123.4;
-    string s = doubleToString(d);
-    cout << s << endl; // muestra: 123.4
     return 0;
 }

@@ -335,7 +335,27 @@ string doubleToString(double d)
     int unDecimal = 0;
     string ptDecStr = "";
     int cantDecimales = 0; //para redondear
-    while(parteDecimal!=0 && cantDecimales < 6){
+    while(parteDecimal!=0 && cantDecimales < 3){
+        parteDecimal = parteDecimal * 10; //muevo pasando la coma un digito decimal 
+        unDecimal = (int)parteDecimal;        // saco el dígito
+        parteDecimal = parteDecimal - unDecimal;  // me quedo con los decimales restantes
+        ptDecStr = ptDecStr+intToString(unDecimal); //lo agrego al string
+        cantDecimales++;
+    }
+    string ret = ptEntStr + "." + ptDecStr;
+    return ret;
+}
+
+//sobrecarga te dice a cuantos decimales redondear 
+string doubleToString(double d,int prec)
+{   
+    int parteEntera = int(d);
+    double parteDecimal = d-parteEntera;
+    string ptEntStr = intToString(parteEntera);
+    int unDecimal = 0;
+    string ptDecStr = "";
+    int cantDecimales = 0; //para redondear
+    while(parteDecimal!=0 && cantDecimales < prec){
         parteDecimal = parteDecimal * 10; //muevo pasando la coma un digito decimal 
         unDecimal = (int)parteDecimal;        // saco el dígito
         parteDecimal = parteDecimal - unDecimal;  // me quedo con los decimales restantes
