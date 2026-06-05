@@ -6,8 +6,9 @@
 #include <iostream>
 
 template <typename T>
-void write(FILE* f, T t)
+void write(FILE* f, T t) //graba el valor t en el archivo f, siendo éste un archivo de registros tipo T, de longitud fija.
 {
+    fwrite(&t,sizeof(T),1,f);
 }
 
 template <typename T>

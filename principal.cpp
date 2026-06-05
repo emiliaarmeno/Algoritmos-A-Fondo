@@ -22,5 +22,22 @@ using std::to_string;
 
 int main()
 {
+    Coll<int> c = coll<int>();
+    collAdd(c, 10, intToString);
+    collAdd(c, 20, intToString);
+    collAdd(c, 30, intToString);
+
+    // elemento que existe
+    cout << collFind(c, 20, cmpInt, stringToInt) << endl; // esperado: 1
+
+    // primer elemento
+    cout << collFind(c, 10, cmpInt, stringToInt) << endl; // esperado: 0
+
+    // ultimo elemento
+    cout << collFind(c, 30, cmpInt, stringToInt) << endl; // esperado: 2
+
+    // elemento que no existe
+    cout << collFind(c, 99, cmpInt, stringToInt) << endl; // esperado: -1
+
     return 0;
 }

@@ -725,6 +725,13 @@ int cmpDouble(double a, double b)
     }
 }
 
+int cmpInt(int a, int b)
+{
+    if(a == b) return 0;
+    else if(a < b) return -1;
+    else return 1;
+}
+
 char* stringToCString(string s)
 {
     char* ret = new char[length(s) + 1];
