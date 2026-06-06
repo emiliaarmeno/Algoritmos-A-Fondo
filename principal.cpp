@@ -22,22 +22,28 @@ using std::to_string;
 
 int main()
 {
+    /* 
+    ejemplo de iterar una coleccion con las funciones
+    collReset(c);
+    while(collHasNext(c)){
+        int x = collNext(c, stringToInt);
+        cout << x << endl;
+    } 
+    */
+
     Coll<int> c = coll<int>();
     collAdd(c, 10, intToString);
     collAdd(c, 20, intToString);
     collAdd(c, 30, intToString);
 
-    // elemento que existe
-    cout << collFind(c, 20, cmpInt, stringToInt) << endl; // esperado: 1
-
-    // primer elemento
-    cout << collFind(c, 10, cmpInt, stringToInt) << endl; // esperado: 0
-
-    // ultimo elemento
-    cout << collFind(c, 30, cmpInt, stringToInt) << endl; // esperado: 2
-
-    // elemento que no existe
-    cout << collFind(c, 99, cmpInt, stringToInt) << endl; // esperado: -1
+    collReset(c);
+    //recorro usando la sobrecarga de collNext
+    bool eoc = false;
+    while(!eoc){
+        int x = collNext(c, eoc, stringToInt);
+        cout << x << endl;
+    }
+    // esperado: 10, 20, 30
 
     return 0;
 }

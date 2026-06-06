@@ -13,6 +13,7 @@ struct Coll
     // cadena tokenizada
     string s;
     char sep;
+    int pos; // ← posicion actual del iterador
 };
 
 template <typename T>
@@ -21,6 +22,7 @@ Coll<T> coll(char sep) //inicializar una colección, especificando el caracter s
     Coll<T> c;
     c.s = "";
     c.sep = sep;
+    c.pos = 0; 
     return c;
 }
 
@@ -30,6 +32,7 @@ Coll<T> coll() //sobrecarga harcodeando el caracter separador
     Coll<T> c;
     c.s = "";
     c.sep = '|';
+    c.pos = 0;
     return c;
 }
 
@@ -89,31 +92,50 @@ int collFind(Coll<T> c, K k, int cmpTK(T, K), T tFromString(string)) //devuelve 
 template <typename T>
 void collSort(Coll<T>& c, int cmpTT(T, T), T tFromString(string), string tToString(T))
 {
+    for(int i=0; i<collSize(c); i++){ //en cada pasada i garantizo que la posición i queda con el valor correcto
+        int posMin=i;      
+        for(int j=i+1; j<collSize(c); j++){ //recorro desde i+1 en adelante buscando un valor menor en posicion incorrecta 
+            T a = collGetAt(c, posMin, tFromString); 
+            T b = collGetAt(c, j, tFromString); 
+            if(cmpTT(b,a)<0){ //si el elemento en j es menor que el elemento en posMin
+                posMin = j;  // actualizo posMin, NO intercambio todavía
+            }
+        }
+        //el elemento en i es menor que el elemento en posMin en esta pasada
+        //intercambio el elemento en i con el elemento en posMin
+        T aux = collGetAt(c, i, tFromString);
+        T tMin = collGetAt(c, posMin, tFromString);
+        collSetAt(c, tMin, i, tToString);
+        collSetAt(c, aux, posMin, tToString);
+    }
 }
 
 template <typename T>
-bool collHasNext(Coll<T> c)
+bool collHasNext(Coll<T> c) //hay mas eleementos? 
 {
-    return true;
+    return c.pos < collSize(c);
 }
 
 template <typename T>
-T collNext(Coll<T>& c, T tFromString(string))
+T collNext(Coll<T>& c, T tFromString(string)) //devuelve el elemento actual y avanzá pos al siguiente
 {
-    T t;
+    T t = collGetAt(c, c.pos, tFromString);
+    c.pos++;
     return t;
 }
 
 template <typename T>
-T collNext(Coll<T>& c, bool& endOfColl, T tFromString(string))
+T collNext(Coll<T>& c, bool& endOfColl, T tFromString(string)) //esta presinde de usar colHasNext y lo convierte en una variable endOfColl/eoc
 {
-    T t;
+    T t = collNext(c, tFromString);
+    endOfColl = c.pos >= collSize(c); //llego al final? si la posicion es mayor o igual que el tamaño si, sino no
     return t;
 }
 
 template <typename T>
-void collReset(Coll<T>& c)
+void collReset(Coll<T>& c) //vuelve pos a cero para poder iterar devuelta
 {
+    c.pos = 0; //lo puedo editar porque me lo mandan por referencia
 }
 
 #endif
