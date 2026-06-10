@@ -138,4 +138,19 @@ void collReset(Coll<T>& c) //vuelve pos a cero para poder iterar devuelta
     c.pos = 0; //lo puedo editar porque me lo mandan por referencia
 }
 
+//estas dos son para que funcionen las de algoritmos tools 
+template<typename T>
+string collToString(Coll<T> c)
+{
+    return c.sep+c.s;
+}
+
+template<typename T>
+Coll<T> collFromString(string s)
+{
+    Coll<T> c;
+    c.sep=s[0];
+    c.s=substring(s,1);
+    return c;
+}
 #endif

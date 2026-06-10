@@ -2,7 +2,7 @@
 #define _TFILES_T_
 
 #include <stdio.h>
-
+#include <strings.hpp>
 #include <iostream>
 
 template <typename T>
@@ -33,6 +33,33 @@ template <typename T>
 int filePos(FILE* f)
 {
     return 0;
+}
+
+bool readLine(FILE* f,string& ln)
+{
+    return false;
+}
+
+bool readWord(FILE* f,string& w,string alsoAllowed)
+{
+    return false;
+}
+
+bool readWord(FILE* f,string& w)
+{
+    return false;
+}
+
+void writeString(FILE* f,string s)
+{
+}
+
+void writeWord(FILE* f,string w)
+{
+}
+
+void writeLine(FILE* f,string ln)
+{
 }
 
 #endif
