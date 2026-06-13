@@ -5,7 +5,7 @@
 #include "biblioteca/funciones/strings.hpp"
 #include "biblioteca/funciones/tokens.hpp"
 #include "biblioteca/tads/parte1/Fecha.hpp"
-#include "biblioteca/tads/parte1/Timer.hpp"
+//#include "biblioteca/tads/parte1/Timer.hpp"
 #include "biblioteca/tads/parte1/Coll.hpp"
 #include "biblioteca/tads/parte2/Array.hpp"
 #include "biblioteca/tads/parte2/List.hpp"
@@ -13,7 +13,7 @@
 #include "biblioteca/tads/parte2/Queue.hpp"
 #include "biblioteca/tads/parte2/Stack.hpp"
 
-#include "principal.hpp"
+#include "compania-aviacion-tools.hpp"
 
 using std::cin;
 using std::cout;
@@ -63,6 +63,7 @@ RCiudad ciudadBuscar(int id,Coll<RCiudad> cCiu)
     RCiudad rc = collGetAt<RCiudad>(cCiu,pos,rCiudadFromString);
     return rc;
 }
+
 void punto1Procesar(RCiudad rcDes,Coll<RCiudad>& cCiu)
 {
     // busco en cCiu -> rcDes.c.idCiu -> pos
@@ -108,6 +109,7 @@ void punto1Mostrar(Coll<RCiudad> cCiu)
 {
 
 }
+
 void punto2Mostrar(Coll<RVuelo> cVue)
 {
 

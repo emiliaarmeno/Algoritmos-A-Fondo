@@ -29,21 +29,24 @@ int main()
         int x = collNext(c, stringToInt);
         cout << x << endl;
     } 
+    otra es hacerlo con eoc
     */
+    // Crear el archivo de prueba
+    FILE* f = fopen("archivo.txt", "w");
+    fwrite("Este archivo es\nMUY-CHICO. Por eso, nadie lo quiere\ncompactar_mas. Ok?", sizeof(char), 71, f);
+    fclose(f);
 
-    Coll<int> c = coll<int>();
-    collAdd(c, 10, intToString);
-    collAdd(c, 20, intToString);
-    collAdd(c, 30, intToString);
-
-    collReset(c);
-    //recorro usando la sobrecarga de collNext
-    bool eoc = false;
-    while(!eoc){
-        int x = collNext(c, eoc, stringToInt);
-        cout << x << endl;
+    // Leer con alsoAllowed = "-_"
+    f = fopen("archivo.txt", "r+b");
+    string w;
+    bool hayMas = readWord(f, w, "-_");
+    while(hayMas)
+    {
+        cout << "[" << w << "]" << endl;
+        hayMas = readWord(f, w, "-_");
     }
-    // esperado: 10, 20, 30
+    cout << "[" << w << "]" << endl; // ultima palabra, cuando hayMas ya es false
+    fclose(f);
 
     return 0;
 }
