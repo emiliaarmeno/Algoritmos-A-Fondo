@@ -106,19 +106,26 @@ bool readWord(FILE* f, string& w, string alsoAllowed)
 
 bool readWord(FILE* f,string& w)
 {
-    return false;
+    return readWord(f, w, "");
 }
 
 void writeString(FILE* f,string s)
 {
+    for(int i=0; s[i]!='\0'; i++){
+        write(f, s[i]);
+    }
 }
 
 void writeWord(FILE* f,string w)
 {
+    writeString(f,w);
+    writeString(f, " ");
 }
 
-void writeLine(FILE* f,string ln)
+void writeLine(FILE* f, string ln)
 {
+    writeString(f, ln);
+    writeString(f, "\n");
 }
 
 #endif

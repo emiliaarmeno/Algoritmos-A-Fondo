@@ -31,7 +31,7 @@ int main()
     } 
     otra es hacerlo con eoc
     */
-    // Crear el archivo de prueba
+    /* // Crear el archivo de prueba
     FILE* f = fopen("archivo.txt", "w");
     fwrite("Este archivo es\nMUY-CHICO. Por eso, nadie lo quiere\ncompactar_mas. Ok?", sizeof(char), 71, f);
     fclose(f);
@@ -46,6 +46,22 @@ int main()
         hayMas = readWord(f, w, "-_");
     }
     cout << "[" << w << "]" << endl; // ultima palabra, cuando hayMas ya es false
+    fclose(f); */
+    
+    FILE* f = fopen("archivo.txt", "w+b");
+    writeLine(f, "Esta es");
+    writeLine(f, "una cadena");
+    writeLine(f, "GENIAL!");
+    fclose(f);
+
+    f = fopen("archivo.txt", "r");
+    string ln;
+    bool hayMas = readLine(f, ln);
+    while(hayMas){
+        cout << "[" << ln << "]" << endl;
+        hayMas = readLine(f, ln);
+    }
+    cout << "[" << ln << "]" << endl;
     fclose(f);
 
     return 0;
