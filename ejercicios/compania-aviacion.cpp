@@ -1,7 +1,7 @@
 
 #include <iostream>
-#include "biblioteca/funciones/millis.hpp"
-#include "biblioteca/funciones/files.hpp"
+//#include "biblioteca/funciones/millis.hpp"
+#include "../biblioteca/funciones/files.hpp"
 #include "biblioteca/funciones/strings.hpp"
 #include "biblioteca/funciones/tokens.hpp"
 #include "biblioteca/tads/parte1/Fecha.hpp"
@@ -43,12 +43,28 @@ Coll<RCiudad> ciudadesSubir()
 
 Coll<RVuelo> vuelosSubir()
 {
-    return {};
+    Coll<RVuelo> ret = coll<RVuelo>();
+
+    FILE* f = fopen("VUELOS.dat","r+b");
+    Vuelo c = read<Vuelo>(f);
+    while( !feof(f) )
+    {
+        RVuelo x = rVuelo(c,0,0);        
+        collAdd<RVuelo>(ret,x,rVueloToString);
+
+        c = read<Vuelo>(f);
+    }
+
+    fclose(f);
+    return ret;
 }
 
-RVuelo vueloBuscar(int idVue,Coll<RVuelo> cVue)
-{
-    return {};
+RVuelo vueloBuscar(int idVue, Coll<RVuelo> cVue)
+{ 
+    // busco en cVUe por id -> pos
+    int pos = collFind<RVuelo,int>(cVue, idVue, cmpRVueloId, rVueloFromString);
+    RVuelo rc = collGetAt<RVuelo>(cVue, pos, rVueloFromString);
+    return rc;
 }
 
 int cmpRCiudadId(RCiudad rc,int id)
@@ -107,6 +123,12 @@ void punto2Procesar(Reserva r,RVuelo rv,Coll<RVuelo>& cVue)
 
 void punto1Mostrar(Coll<RCiudad> cCiu)
 {
+    collReset(cCiu);
+    bool eoc = false;
+    while(!eoc){
+        RCiudad rc = collNext(cCiu, eoc, rCiudadFromString);
+        cout << "La cantidad de familias que eligieron como ciudad de destino "<< rc.c.descr << "fueron " << rc.cont << endl;
+    }
 
 }
 
