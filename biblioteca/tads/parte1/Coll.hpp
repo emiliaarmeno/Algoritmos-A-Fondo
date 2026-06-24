@@ -62,7 +62,7 @@ int collAdd(Coll<T>& c, T t, string tToString(T)) //agregar un elemento al final
 }
 
 template <typename T>
-void collSetAt(Coll<T>& c, T t, int p, string tToString(T))
+    void collSetAt(Coll<T>& c, T t, int p, string tToString(T))
 {
     string str = tToString(t);
     setTokenAt(c.s, c.sep, str, p);

@@ -96,7 +96,7 @@ void punto2Procesar(Resultado r,Coll<REstadio>& cEs)
     if(r.codRes==0){ //solo sumo si empataron 
         rEst.cpe+=1;
     }
-    collSetAt<REstadio>(cEs, rEst, pos, rEquipoToString); 
+    collSetAt<REstadio>(cEs, rEst, pos, rEstadioToString); 
 }
 
 int cmpREqPuntos(REquipo re1, REquipo re2){
