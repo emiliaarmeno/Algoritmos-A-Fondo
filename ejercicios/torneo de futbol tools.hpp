@@ -6,9 +6,9 @@
 #include <string>
 #include <string.h>
 #include <stdlib.h>
-#include "biblioteca/funciones/strings.hpp"
-#include "biblioteca/funciones/tokens.hpp"
-#include "biblioteca/tads/parte1/Coll.hpp"
+#include "../biblioteca/funciones/strings.hpp"
+#include "../biblioteca/funciones/tokens.hpp"
+#include "../biblioteca/tads/parte1/Coll.hpp"
 using namespace std;
 
 struct Resultado
