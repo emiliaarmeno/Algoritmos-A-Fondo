@@ -1,0 +1,154 @@
+#ifndef _MAINHPP
+#define _MAINHPP
+#include <iostream>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <string.h>
+#include <stdlib.h>
+#include "biblioteca/funciones/strings.hpp"
+#include "biblioteca/funciones/tokens.hpp"
+#include "biblioteca/tads/parte1/Coll.hpp"
+using namespace std;
+
+struct Presta
+{
+	int idPres;
+	int idPrac;
+	long long fechaHora;
+	int minutos;
+};
+
+struct Practica
+{
+	int idPrac;
+	char descr[50];
+};
+
+string prestaToString(Presta x)
+{
+	char sep = 1;
+	string sIdPres=to_string(x.idPres);
+	string sIdPrac=to_string(x.idPrac);
+	string sFechaHora=to_string(x.fechaHora);
+	string sMinutos=to_string(x.minutos);
+	return sIdPres+sep+sIdPrac+sep+sFechaHora+sep+sMinutos;
+}
+
+Presta prestaFromString(string s)
+{
+	char sep = 1;
+	Presta x;
+	string t0 = getTokenAt(s,sep,0);
+	x.idPres=stoi(t0);
+	string t1 = getTokenAt(s,sep,1);
+	x.idPrac=stoi(t1);
+	string t2 = getTokenAt(s,sep,2);
+	x.fechaHora=atoll(t2.c_str());
+	string t3 = getTokenAt(s,sep,3);
+	x.minutos=stoi(t3);
+	return x;
+}
+
+string prestaToDebug(Presta x)
+{
+	stringstream sout;
+	sout<< "[";
+	sout << x.idPres;
+	sout << ",";
+	sout << x.idPrac;
+	sout << ",";
+	sout << x.fechaHora;
+	sout << ",";
+	sout << x.minutos;
+	sout<< "]";
+	return sout.str();
+}
+
+string prestaToDebug(string mssg,Presta x)
+{
+	stringstream sout;
+	sout<< mssg<<":[";
+	sout << x.idPres;
+	sout << ",";
+	sout << x.idPrac;
+	sout << ",";
+	sout << x.fechaHora;
+	sout << ",";
+	sout << x.minutos;
+	sout<< "]";
+	return sout.str();
+}
+
+Presta presta(int idPres,int idPrac,long long fechaHora,int minutos)
+{
+	Presta a;
+	a.idPres = idPres;
+	a.idPrac = idPrac;
+	a.fechaHora = fechaHora;
+	a.minutos = minutos;
+	return a;
+}
+
+bool prestaEquals(Presta a,Presta b)
+{
+	if(a.idPres!=b.idPres) return false;
+	if(a.idPrac!=b.idPrac) return false;
+	if(a.fechaHora!=b.fechaHora) return false;
+	if(a.minutos!=b.minutos) return false;
+	return true;
+}
+
+string practicaToString(Practica x)
+{
+	char sep = 2;
+	string sIdPrac=to_string(x.idPrac);
+	string sDescr=x.descr;
+	return sIdPrac+sep+sDescr;
+}
+
+Practica practicaFromString(string s)
+{
+	char sep = 2;
+	Practica x;
+	string t0 = getTokenAt(s,sep,0);
+	x.idPrac=stoi(t0);
+	string t1 = getTokenAt(s,sep,1);
+	strcpy(x.descr,t1.c_str());
+	return x;
+}
+
+string practicaToDebug(Practica x)
+{
+	stringstream sout;
+	sout<< "[";
+	sout << x.idPrac;
+	sout << ",";
+	sout << x.descr;
+	sout<< "]";
+	return sout.str();
+}
+
+string practicaToDebug(string mssg,Practica x)
+{
+	stringstream sout;
+	sout<< mssg<<":[";
+	sout << x.idPrac;
+	sout << ",";
+	sout << x.descr;
+	sout<< "]";
+	return sout.str();
+}
+Practica practica(int idPrac,string descr)
+{
+	Practica a;
+	a.idPrac = idPrac;
+	strcpy(a.descr,descr.c_str());
+	return a;
+}
+bool practicaEquals(Practica a,Practica b)
+{
+	if(a.idPrac!=b.idPrac) return false;
+	return true;
+}
+#endif
