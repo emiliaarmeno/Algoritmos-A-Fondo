@@ -10,91 +10,138 @@ using std::string;
 template<typename T>
 struct Array
 {
+   T* a;
+   int len;
+   int cap;
+   int curr;
 };
 
 template<typename T>
 Array<T> array()
 {
-   return {};
+   Array<T> a;
+   a.len=0;
+   a.cap = 100;
+   a.a = new T[a.cap];
+   a.curr = 0;
+   return a;
+}
+
+template<typename T>
+void _arrayResize(Array<T>& a,int size)
+{
+   T* b=new T[size];
+   for(int i=0;i<a.len;i++)
+   {
+      b[i]=a.a[i];
+   }
+
+   delete[] a.a;
+
+   a.a = b;
+   a.cap = size;
 }
 
 template<typename T>
 int arrayAdd(Array<T>& a,T t)
 {
-    return 0;
+    if( a.len>=a.cap )
+    {
+       _arrayResize(a,a.cap*2);
+    }
+    
+    return add<T>(a.a,a.len,t);
 }
 
 template<typename T>
 T* arrayGet(Array<T> a,int p)
 {
-   return NULL;
+    return &(a.a[p]);
 }
 
 template<typename T>
 void arraySet(Array<T>& a,int p,T t)
 {
+    a.a[p]=t;
 }
 
 template<typename T>
 void arrayInsert(Array<T>& a,T t,int p)
 {
+    if( a.len>=a.cap )
+    {
+        _arrayResize(a,a.cap*2);
+    }
+
+   insert<T>(a.a,a.len,t,p);
 }
 
 template<typename T>
 int arraySize(Array<T> a)
 {
-   return 0;
+   return a.len;
 }
 
 template<typename T>
 T arrayRemove(Array<T>& a,int p)
 {
-   return {};
+   return remove<T>(a.a,a.len,p);
 }
 
 template<typename T>
 void arrayRemoveAll(Array<T>& a)
 {
+    a.len=0;
 }
 
 template<typename T,typename K>
 int arrayFind(Array<T> a,K k,int cmpTK(T,K))
 {
-   return 0;
+   return find<T,K>(a.a,a.len,k,cmpTK);
 }
 
 template<typename T>
 int arrayOrderedInsert(Array<T>& a,T t,int cmpTT(T,T))
 {
-   return 0;
+   return orderedInsert<T>(a.a,a.len,t,cmpTT);
 }
 
 template<typename T>
 T* arrayDiscover(Array<T>& a,T t,int cmpTT(T,T))
 {
-   return NULL;
+   int p = arrayFind<T,T>(a,t,cmpTT);
+   if( p<0 )
+   {
+      p = arrayAdd<T>(a,t);
+   }
+
+   return arrayGet<T>(a,p);
 }
 
 template<typename T>
 void arraySort(Array<T>& a,int cmpTT(T,T))
 {
+    sort<T>(a.a,a.len,cmpTT);
 }
 
 template<typename T>
 void arrayReset(Array<T>& a)
 {
+     a.curr = 0;
 }
 
 template<typename T>
 bool arrayHasNext(Array<T>& a)
 {
-    return true;
+   return a.curr<a.len;
 }
 
 template<typename T>
 T* arrayNext(Array<T>& a)
 {
-    return NULL;
+    T* x = arrayGet<T>(a,a.curr);
+    a.curr++;
+    return x;
 }
 
 #endif
