@@ -2,6 +2,7 @@
 #define _TARRAYS_T_
 
 #include <iostream>
+#include <cassert>
 
 template <typename T>
 int add(T arr[],int& len,T e)
