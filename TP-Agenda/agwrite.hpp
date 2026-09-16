@@ -13,7 +13,6 @@
 #include "biblioteca/tads/parte1/BitWriter.hpp"
 #include "biblioteca/tads/parte1/Coll.hpp"
 #include "biblioteca/tads/parte1/Fecha.hpp"
-#include "biblioteca/tads/parte1/Timer.hpp"
 #include "biblioteca/tads/parte2/Array.hpp"
 #include "biblioteca/tads/parte2/List.hpp"
 #include "biblioteca/tads/parte2/Map.hpp"
