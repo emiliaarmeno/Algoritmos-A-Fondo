@@ -8,9 +8,8 @@ template <typename T>
 int add(T arr[],int& len,T e)
 {
     assert(len>=0 && "len debe ser >=0");
-    arr[len]=e;
-    len++;
-    return len-1;
+    arr[len++]=e;
+    return len; //devuelvo el indice de lo que acabo de agregar 
 }
 
 template <typename T>
