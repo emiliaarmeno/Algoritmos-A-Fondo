@@ -27,10 +27,13 @@ Array<T> array()
    return a;
 }
 
+
+//redimensiono el array, creo uno con mas capacidad y elimino el anterior 
+//hago que el anterior apunte al nuevo, esto para agregar mas capacidad 
 template<typename T>
 void _arrayResize(Array<T>& a,int size)
 {
-   T* b=new T[size];
+   T* b = new T[size]; 
    for(int i=0;i<a.len;i++)
    {
       b[i]=a.a[i];
@@ -45,9 +48,9 @@ void _arrayResize(Array<T>& a,int size)
 template<typename T>
 int arrayAdd(Array<T>& a,T t)
 {
-    if( a.len>=a.cap )
+    if( a.len>=a.cap ) //si pretendo agregar un elemento que no entra porque no me da la capacidad 
     {
-       _arrayResize(a,a.cap*2);
+       _arrayResize(a,a.cap*2); //redimensiono al doble de capacidad 
     }
     
     return add<T>(a.a,a.len,t);
@@ -56,7 +59,7 @@ int arrayAdd(Array<T>& a,T t)
 template<typename T>
 T* arrayGet(Array<T> a,int p)
 {
-    return &(a.a[p]);
+    return &(a.a[p]); //devuelvo la direccion
 }
 
 template<typename T>

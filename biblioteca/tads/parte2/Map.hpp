@@ -57,7 +57,7 @@ V* mapPut(Map<K, V>& m, K k, V v)
 }
 
 template <typename K, typename V>
-bool mapContains(Map<K, V> m, K k)
+bool mapContains(Map<K, V> m, K k) 
 {
    return mapGet<K,V>(m,k)!=NULL;
 }

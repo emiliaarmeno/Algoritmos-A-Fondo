@@ -8,6 +8,8 @@
 template <typename T>
 struct Node
 {
+    T info; //el dato 
+    Node<T>* sig; //el puntero al siguiente 
 };
 
 template <typename T>
