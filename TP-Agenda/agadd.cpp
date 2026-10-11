@@ -10,7 +10,6 @@
 #include "biblioteca/funciones/tokens.hpp"
 #include "biblioteca/tads/parte1/Coll.hpp"
 #include "biblioteca/tads/parte1/Fecha.hpp"
-#include "biblioteca/tads/parte1/Timer.hpp"
 #include "biblioteca/tads/parte1/BitWriter.hpp"
 #include "biblioteca/tads/parte1/BitReader.hpp"
 #include "biblioteca/tads/parte2/Array.hpp"
