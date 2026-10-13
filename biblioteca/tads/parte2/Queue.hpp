@@ -10,37 +10,46 @@ using std::string;
 template <typename T>
 struct Queue
 {
+    Node<T>* first;   // primer nodo (de donde se desencola)
+    Node<T>* last;    // último nodo (donde se encola)
+    int size;
 };
 
 template <typename T>
 Queue<T> queue()
 {
-    return {};
+    Queue<T> qu;
+    qu.first=NULL;
+    qu.last=NULL; 
+    qu.size=0;
+    return qu;
 }
 
 template <typename T>
 T* queueEnqueue(Queue<T>& q, T e)
 {
-    return NULL;
+    Node<T>* nodo = enqueue<T>(q.first, q.last, e); //esta devuelve un nodo 
+    q.size++;
+    return &(nodo->info); //tengo que devolver la direccion en la que quedo el dato
 }
 
 template <typename T>
 T queueDequeue(Queue<T>& q)
 {
-    T t;
-    return;
+    q.size--;
+    return dequeue<T>(q.first, q.last); //devuelve lo que desencolo 
 }
 
 template <typename T>
 bool queueIsEmpty(Queue<T> q)
 {
-    return true;
+    return isEmpty(q.first);
 }
 
 template <typename T>
 int queueSize(Queue<T> q)
 {
-    return 0;
+    return q.size;
 }
 
 #endif
