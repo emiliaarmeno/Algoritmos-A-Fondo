@@ -227,7 +227,7 @@ Node<T>* enqueue(Node<T>*& q, T e) //para lista circular
         nuevo->sig=nuevo; //apunta a si mismo 
     }
     q = nuevo; //q siempre debe apuntar al ultimo elemento
-    return NULL;
+    return nuevo;
 }
 
 template <typename T>
