@@ -58,6 +58,8 @@ T listRemoveFirst(List<T>& lst)
     return removeFirst<T>(lst.first);
 }
 
+//busca el primer elemento concordante con k 
+//si no lo encuentra devuelve NULL
 template <typename T, typename K>
 T* listFind(List<T> lst, K k, int cmpTK(T, K))
 {
