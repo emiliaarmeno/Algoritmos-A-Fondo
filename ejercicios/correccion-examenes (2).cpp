@@ -27,6 +27,11 @@ struct Alumno
     char nombre[50];
     int idCur;
 };
+struct RAlumno
+{
+    Alumno a;
+    int calif;  // 5 a 10; 0 significa R
+};
 struct Curso
 {
     int idCur;
@@ -41,11 +46,16 @@ struct Tema  // una respuesta correcta
     char afir[250];
     char rta;  // 'V', 'F'
 };
+struct Pregunta
+{
+    int idAfir;
+    char rta;
+};
 struct TTema
 {
     int idTema;
-    List<Tema> practicos;
-    List<Tema> teoricos;
+    List<Pregunta> practicos;
+    List<Pregunta> teoricos;
 };
 struct Respuesta
 {
@@ -55,141 +65,195 @@ struct Respuesta
     char rta;       // 'V' o 'F'
     int idTema;     // 1 a 5
 };
-struct Calificacion
-{
-    int idCur;
-    int idAlu;
-    char c;  // calificacion
-};
 
-Calificacion calificacion(){
-    Calificacion c; 
-    c.idAlu = 0;
-    c.idCur = 0;
-    c.c = ' ';
-    return c; 
-}
+int cmpTTID(TTema tt, int idTem);
+int cmpAluID(Alumno a, int idAlu);
+int cmpPregIdAfir(Pregunta p, int idAfir);
 
 // Funcion de inicializacion
 TTema ttema(int id)
 {
     TTema t;
     t.idTema = id;
-    t.practicos = list<Tema>();
-    t.teoricos = list<Tema>();
+    t.practicos = list<Pregunta>();
+    t.teoricos = list<Pregunta>();
     return t;
 }
 
-int cmpTT(Tema a, Tema b)
-{
-    return a.idTema - b.idTema;
-}
-int cmpTTId(TTema a, int id)
-{
-    return a.idTema - id;
-}
+RAlumno rAlumno();
 
-// devuelve los temas con las afirmaciones ordenadas por teoricos o practicos
-List<TTema> subirTTemas()
+// Evalua un examen y retorna la calificacion
+int ttemaEvaluar(TTema t, List<Respuesta> lst)
 {
-    List<TTema> ret =
-        list<TTema>();  // vamos a tener 5 cosas y en cada una las 20 rtas
-    List<Tema> afirmaciones = list<Tema>();
+    int calificacion;
+    // contadores de respuestas correctas e incorrectas
+    int praCorrec = 0;
+    int teoCorrec = 0;
+    int praIncorr = 0;
+    int teoIncorr = 0;
 
-    // subo todas las afirmaciones ordenandolas por idTema
-    FILE* f = fopen("TEMAS.dat", "r+b");
-    Tema t = read<Tema>(f);
-
-    while(!feof(f))
+    // recorro las respuestas y las voy comparando con las correctas
+    listReset<Respuesta>(lst);
+    while(listHasNext<Respuesta>(lst))
     {
-        listOrderedInsert<Tema>(afirmaciones, t, cmpTT);
-        t = read<Tema>(f);
-    }
+        Respuesta* r = listNext<Respuesta>(lst);
 
-    fclose(f);
+        // si es de tipo teorico lo busco en la lista de preguntas teoricas del
+        // tema
+        if(r->tipoAfir == 'T')
+        {
+            // el ttema que me llega es el que hizo el alumno con las respuestas
+            // ordenadas por tipo
+            Pregunta afirCorrecta =
+                *listFind<Pregunta, int>(t.teoricos, r->idAfir, cmpPregIdAfir);
 
-    // recorro las afirmaciones y las añado a TTema
-    listReset<Tema>(afirmaciones);
-    while(listHasNext<Tema>(afirmaciones))
-    {
-        Tema t = *listNext<Tema>(afirmaciones);
-        TTema* tt = listFind<TTema, int>(ret, t.idTema, cmpTTId);
-
-        if(&t == NULL)
-        {  // no esta en mi list de TTema
-            // tengo que agregarlo
-            TTema ttnuevo = ttema(t.idTema);
-            if(t.tipoAfir == 'T')
+            // me fijo si la respondio bien
+            if(afirCorrecta.rta == r->rta)
             {
-                listAdd<Tema>(ttnuevo.teoricos, t);
+                teoCorrec++;
             }
             else
             {
-                listAdd<Tema>(ttnuevo.practicos, t);
+                teoIncorr++;
             }
-            listAdd<TTema>(ret, ttnuevo);
         }
         else
-        {
-            // ya lo tengo en el list ret
-            // tengo que agregar el tema nomas al ret
-            if(t.tipoAfir == 'T')
+        {  // el tipo de afirm es practico
+            // busco la afirmacion en la lista de afirm practicas
+            Pregunta afirCorrecta =
+                *listFind<Pregunta, int>(t.practicos, r->idAfir, cmpPregIdAfir);
+
+            if(afirCorrecta.rta == r->rta)
             {
-                listAdd<Tema>(tt->teoricos, t);
+                praCorrec++;
             }
             else
             {
-                listAdd<Tema>(tt->practicos, t);
+                praIncorr++;
             }
         }
     }
 
+    // calculo nota con los contadores
+    double totTeo = (0.5 * teoCorrec) - (0.5 * teoIncorr);
+    double totPra = (0.5 * praCorrec) - (0.5 * praIncorr);
+
+    if(totPra < 2.5 || totTeo < 2.5)
+    {
+        // no tendra nota numerica, solo R
+        calificacion = 0;  // esto lo tomo como R
+    }
+    else if((totPra >= 2.5 || totTeo >= 2.5) && (totPra < 3 || totTeo < 3))
+    {
+        // tiene nota numerica pero no aprueba
+        calificacion = 5;
+    }
+    else if(totPra >= 3 || totTeo >= 3)
+    {
+        // aprobo
+        calificacion = totTeo + totPra;
+    }
+
+    return calificacion;
+}
+
+//los meto en la lista odenando por idTema
+List<Tema> temasSubir();
+
+List<TTema> tTemaOrdenar(List<Tema>& desordenado){
+
+    List<TTema> ret = list<TTema>();
+
+    listReset<Tema>(desordenado);
+    while( listHasNext<Tema>(desordenado) )
+    {
+        Tema t = *listNext<Tema>(desordenado);
+
+        //ya esta el tema en ordenado? 
+        TTema* tt = listFind<TTema,int>(ret, t.idTema, cmpTTID);
+
+        //no estaba 
+        if( tt==NULL )                                   
+        {
+            //lo creo y me quedo con el puntero
+            tt = listAdd<TTema>(ret, ttema(t.idTema));   // listAdd devuelve T*
+        }
+
+        Pregunta p;
+        p.idAfir = t.idAfir;
+        p.rta = t.rta;
+
+        if( t.tipoAfir=='T' )
+        {
+            listAdd<Pregunta>(tt->teoricos, p);
+        }
+        else 
+        {
+            listAdd<Pregunta>(tt->practicos, p);
+        }                 
+    }
     return ret;
 }
 
-// Evalua un examen y retorna la calificacion
-int ttemaEvaluar(TTema t, List<Respuesta> lst);
+List<Alumno> alumnosSubir();
+List<Curso> cursosSubir();
+
+List<RAlumno> respuestasProcesar(List<TTema> ordenado, List<Alumno> alumnos)
+{
+    List<RAlumno> calificados = list<RAlumno>();
+    // recorro respuestas y los que no aparecen es porque no fueron a rendir
+    FILE* f = fopen("RESPUESTAS.dat", "r+b");
+    Respuesta r = read<Respuesta>(f);
+    while(!feof(f))
+    {
+        int idTemaAnt = r.idTema;
+        int idAluAnt = r.idAlu;
+        List<Respuesta> respuestaAlumno = list<Respuesta>();
+        while(idAluAnt == r.idAlu && idTemaAnt == r.idTema && !feof(f))
+        {
+            // voy guardando todas las respuestas de un mismo alumno en una list
+            // (para mandar al ttemaEvaluar)
+            listAdd<Respuesta>(respuestaAlumno, r);
+
+            idTemaAnt = r.idTema;
+            idAluAnt = r.idAlu;
+            r = read<Respuesta>(f);
+        }
+
+        // agarro el tema y el alumno, creo el ralumno
+        TTema* t = listFind<TTema, int>(ordenado, idTemaAnt, cmpTTID);
+        Alumno* a = listFind<Alumno, int>(alumnos, idAluAnt, cmpAluID);
+
+        RAlumno ra = rAlumno();
+        ra.a = *a;
+        // llamo a ttemaEvaluar la calificacion que devuelve la meto en la list que retorno
+        int calificacion = ttemaEvaluar(*t, respuestaAlumno);
+        ra.calif = calificacion;
+        listAdd<RAlumno>(calificados, ra);
+
+        listFree<Respuesta>(respuestaAlumno);
+    }
+    fclose(f);
+    return calificados;
+}
+void rAlumnoMostrar(List<RAlumno> alumnosCalificados, List<Curso> cursos);
 
 int main()
 {
+    // subir temas (afirmaciones correctas) a memoria
+    List<Tema> desordenado = temasSubir();
+    // ordeno los temas en una list de ttema, osea guardo por cada tema las
+    // afirmaciones teoricas y practicas separadas
+    List<TTema> ordenado = tTemaOrdenar(desordenado);
+    // subir alumnos y cursos a memoria (en su estructura original)
+    List<Alumno> alumnos = alumnosSubir();
+    List<Curso> cursos = cursosSubir();
+    // leer RESPUESTAS.dat procesar y generar una Calificacion por alumno
+    // las calificaciones las meto en la list de RAlumno y los ordenar las
+    // calificaciones por curso
+    List<RAlumno> alumnosCalificados = respuestasProcesar(ordenado, alumnos);
+    // recorrer por curso (corte de control) e imprimir
+    rAlumnoMostrar(alumnosCalificados, cursos);
 
-    // 1. subir temas (afirmaciones correctas) a memoria
-    // 2. subir alumnos y cursos a memoria
-    // 3. leer RESPUESTAS.dat y generar una Calificacion por alumno
-    // 4. ordenar las calificaciones por curso
-    // 5. recorrer por curso (corte de control) e imprimir
-
-
-
-
-
-    List<Calificacion> calif = list<Calificacion>();
-    // subir ttemas, decvuelve lista con ttemas con las afir separadas por toe
-    List<TTema> lTTem = subirTTemas();
-    // recorremos respuestas que esta ordenado por idAlu, tipoAfir, idAfir
-    FILE* f = fopen("RESPUESTA.dat", "r+b");
-    Respuesta r = read<Respuesta>(f);
-    int idAnt = r.idAlu;
-    while(!feof(f))
-    {
-        // agarro todas las respuestas del mismo alumno y las meto en un list
-        List<Respuesta> respAlu = list<Respuesta>();
-        while(r.idAlu == idAnt)
-        {
-            listAdd<Respuesta>(respAlu, r);
-            r = read<Respuesta>(f);
-            idAnt = r.idAlu;
-        }
-        
-        // llamo a ttemaEvaluar y me devuelve una calificacion
-        TTema temaDeAlu = *listFind<TTema, int>(lTTem, r.idTema, cmpTTId);
-        int nota = ttemaEvaluar(temaDeAlu, respAlu);
-        Calificacion c = calificacion();
-        
-
-        //para que en la prox vuelta entre
-        idAnt = r.idAlu;
-    }
-    fclose(f);
     return 0;
 }
