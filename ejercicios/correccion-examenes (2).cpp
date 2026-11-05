@@ -30,7 +30,7 @@ struct Alumno
 struct RAlumno
 {
     Alumno a;
-    int calif;  // 5 a 10; 0 significa R
+    int calif;  // 5 a 10, 0 significa R
 };
 struct Curso
 {
@@ -66,9 +66,12 @@ struct Respuesta
     int idTema;     // 1 a 5
 };
 
-int cmpTTID(TTema tt, int idTem);
-int cmpAluID(Alumno a, int idAlu);
-int cmpPregIdAfir(Pregunta p, int idAfir);
+int cmpTTID(TTema tt, int idTem){ return tt.idTema-idTem; }
+int cmpAluID(Alumno a, int idAlu){ return a.idAlu-idAlu; }
+int cmpPregIdAfir(Pregunta p, int idAfir){ return p.idAfir-idAfir; }
+int cmpTT(Tema a, Tema b){ return a.idTema-b.idTema; }
+int cmpRACur(RAlumno a, RAlumno b){ return a.a.idCur-b.a.idCur; }
+int cmpCurID(Curso c, int id){ return c.idCur - id; }
 
 // Funcion de inicializacion
 TTema ttema(int id)
@@ -80,7 +83,11 @@ TTema ttema(int id)
     return t;
 }
 
-RAlumno rAlumno();
+RAlumno rAlumno(){
+    RAlumno ra;
+    ra.calif=0;
+    return ra;
+}
 
 // Evalua un examen y retorna la calificacion
 int ttemaEvaluar(TTema t, List<Respuesta> lst)
@@ -98,39 +105,22 @@ int ttemaEvaluar(TTema t, List<Respuesta> lst)
     {
         Respuesta* r = listNext<Respuesta>(lst);
 
-        // si es de tipo teorico lo busco en la lista de preguntas teoricas del
-        // tema
+        // si es de tipo teorico lo busco en la lista de preguntas teoricas del tema
         if(r->tipoAfir == 'T')
         {
-            // el ttema que me llega es el que hizo el alumno con las respuestas
-            // ordenadas por tipo
-            Pregunta afirCorrecta =
-                *listFind<Pregunta, int>(t.teoricos, r->idAfir, cmpPregIdAfir);
+            // el ttema que me llega es el que hizo el alumno con las respuestas ordenadas por tipo
+            Pregunta afirCorrecta = *listFind<Pregunta, int>(t.teoricos, r->idAfir, cmpPregIdAfir);
 
-            // me fijo si la respondio bien
-            if(afirCorrecta.rta == r->rta)
-            {
-                teoCorrec++;
-            }
-            else
-            {
-                teoIncorr++;
-            }
+            // me fijo si la respondio bien y sumo para cont de teoricos 
+            (afirCorrecta.rta == r->rta)? teoCorrec++ : teoIncorr++;
         }
         else
-        {  // el tipo de afirm es practico
+        {   // el tipo de afirm es practico
             // busco la afirmacion en la lista de afirm practicas
-            Pregunta afirCorrecta =
-                *listFind<Pregunta, int>(t.practicos, r->idAfir, cmpPregIdAfir);
+            Pregunta afirCorrecta = *listFind<Pregunta, int>(t.practicos, r->idAfir, cmpPregIdAfir);
 
-            if(afirCorrecta.rta == r->rta)
-            {
-                praCorrec++;
-            }
-            else
-            {
-                praIncorr++;
-            }
+            //segun como respondio sumo a los contadores
+            (afirCorrecta.rta == r->rta)? praCorrec++ : praIncorr++;
         }
     }
 
@@ -158,7 +148,19 @@ int ttemaEvaluar(TTema t, List<Respuesta> lst)
 }
 
 //los meto en la lista odenando por idTema
-List<Tema> temasSubir();
+List<Tema> temasSubir(){
+    List<Tema> ret = list<Tema>();
+    FILE* f = fopen("TEMAS.dat", "r+b");
+
+    Tema t = read<Tema>(f);
+    while(!feof(f)){
+        listOrderedInsert<Tema>(ret, t, cmpTT);
+        t = read<Tema>(f);
+    }
+
+    fclose(f);
+    return ret; 
+}
 
 List<TTema> tTemaOrdenar(List<Tema>& desordenado){
 
@@ -183,21 +185,43 @@ List<TTema> tTemaOrdenar(List<Tema>& desordenado){
         p.idAfir = t.idAfir;
         p.rta = t.rta;
 
-        if( t.tipoAfir=='T' )
-        {
-            listAdd<Pregunta>(tt->teoricos, p);
-        }
-        else 
-        {
-            listAdd<Pregunta>(tt->practicos, p);
-        }                 
+        //lo agrego al adecuado
+        ( t.tipoAfir=='T' )? listAdd<Pregunta>(tt->teoricos, p) : listAdd<Pregunta>(tt->practicos, p);
+                        
     }
+
     return ret;
 }
 
-List<Alumno> alumnosSubir();
-List<Curso> cursosSubir();
+List<Alumno> alumnosSubir(){
+    List<Alumno> ret = list<Alumno>();
+    FILE* f = fopen("ALUMNOS.dat", "r+b");
 
+    Alumno a = read<Alumno>(f);
+    while(!feof(f)){
+        listAdd<Alumno>(ret, a);
+        a = read<Alumno>(f);
+    }
+
+    fclose(f);
+    return ret; 
+}
+List<Curso> cursosSubir(){
+    List<Curso> ret = list<Curso>();
+    FILE* f = fopen("CURSOS.dat", "r+b");
+
+    Curso a = read<Curso>(f);
+    while(!feof(f)){
+        listAdd<Curso>(ret, a);
+        a = read<Curso>(f);
+    }
+
+    fclose(f);
+    return ret; 
+}
+
+//voy agarrando todas las respuestas del alumno y las comparo con las correctas asi con todos los alumnos 
+//devuelvo la lista con los alumnos ya con nota 
 List<RAlumno> respuestasProcesar(List<TTema> ordenado, List<Alumno> alumnos)
 {
     List<RAlumno> calificados = list<RAlumno>();
@@ -236,7 +260,64 @@ List<RAlumno> respuestasProcesar(List<TTema> ordenado, List<Alumno> alumnos)
     fclose(f);
     return calificados;
 }
-void rAlumnoMostrar(List<RAlumno> alumnosCalificados, List<Curso> cursos);
+
+
+void cursoMostrar(int idCur, Queue<RAlumno>& q, int aprobaron, List<Curso>& cursos)
+{
+    Curso* c = listFind<Curso,int>(cursos, idCur, cmpCurID);
+    int rindieron = queueSize<RAlumno>(q);
+    int reprobaron = rindieron - aprobaron;
+
+    cout << "Curso: " << c->descr << endl;
+    cout << "Rindieron: " << rindieron << endl;
+    cout << "Aprobaron: " << aprobaron << " (" << aprobaron*100/rindieron << "%)" << endl;
+    cout << "Reprobaron: " << reprobaron << " (" << reprobaron*100/rindieron << "%)" << endl;
+    cout << "Alumno\tCalificación" << endl;
+
+    int suma = 0;
+    while( !queueIsEmpty<RAlumno>(q) )
+    {
+        RAlumno ra = queueDequeue<RAlumno>(q);
+        cout << ra.a.nombre << "\t";
+        if( ra.calif==0 ) cout << "R"; else cout << ra.calif;
+        cout << endl;
+        suma += ra.calif;           // decisión: la R cuenta como 0 en el promedio
+    }
+    cout << "Promedio: " << suma / rindieron << endl;
+}
+
+void rAlumnoMostrar(List<RAlumno>& calificados, List<Curso> cursos){
+    //ordeno los alumnos por curso
+    listSort<RAlumno>(calificados, cmpRACur);
+
+    Queue<RAlumno> delCurso = queue<RAlumno>();
+    int idCurActual = -1;
+    int aprobaron = 0;
+
+    listReset<RAlumno>(calificados);
+    while(listHasNext<RAlumno>(calificados)){
+        RAlumno ra = *listNext<RAlumno>(calificados);
+
+        if( ra.a.idCur != idCurActual )              // empieza un curso nuevo
+        {
+            if( idCurActual != -1 )
+            {
+                cursoMostrar(idCurActual, delCurso, aprobaron, cursos);
+                aprobaron = 0;
+            }
+            idCurActual = ra.a.idCur;
+        }
+
+        queueEnqueue<RAlumno>(delCurso, ra);
+        if( ra.calif >= 6 ) aprobaron++;   
+    }
+
+    // cierro el último curso
+    if( idCurActual != -1 )                          
+    {
+        cursoMostrar(idCurActual, delCurso, aprobaron, cursos);
+    }
+}
 
 int main()
 {
